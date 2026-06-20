@@ -1,3 +1,5 @@
+// src/scripts/components/card.js
+
 export const likeCard = (likeButton) => {
   likeButton.classList.toggle("card__like-button_is-active");
 };
@@ -13,10 +15,7 @@ const getTemplate = () => {
     .cloneNode(true);
 };
 
-export const createCardElement = (
-  data,
-  { onPreviewPicture, onLikeIcon, onDeleteCard }
-) => {
+export const createCard = (data, { onPreviewPicture, onLikeIcon, onDeleteCard }) => {
   const cardElement = getTemplate();
   const likeButton = cardElement.querySelector(".card__like-button");
   const deleteButton = cardElement.querySelector(".card__control-button_type_delete");

@@ -11,3 +11,27 @@
 @import url('../blocks/popup/_is-animated/popup_is-animated.css');
 @import url('../blocks/popup/_is-opened/popup_is-opened.css');
 /*Импортируем на уровень выше*/
+/* Стили для валидации форм */
+.popup__input_type_error {
+  border-bottom-color: #FF0000;
+}
+
+.popup__error {
+  display: block;
+  min-height: 30px;
+  font-size: 12px;
+  line-height: 15px;
+  color: #FF0000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.popup__error_visible {
+  opacity: 1;
+}
+
+.popup__button_disabled {
+  opacity: 0.2;
+  pointer-events: none;
+  user-select: none;
+}
