@@ -3,3 +3,10 @@
 Для запуска приложения необходимо использовать live-server
 ![изображение live-server](image.png)
 Live-server является расширением VSCode
+# Mesto
+
+Проект Mesto — интерактивная страница для обмена фотографиями.
+
+## Ссылка на проект
+
+https://171120069.github.io/mesto-production/
