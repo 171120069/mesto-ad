@@ -115,7 +115,7 @@ const handleCardFormSubmit = (evt) => {
     link: cardLinkInput.value,
   })
     .then((cardData) => {
-      const cardElement = createCard(cardData, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard);
+      const cardElement = createCard(cardData, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard, handleInfoClick);
       placesWrap.prepend(cardElement);
       cardForm.reset();
       closeModalWindow(cardFormModalWindow);
@@ -147,6 +147,82 @@ const handleLikeCard = (cardId, likeButton, likeCount) => {
     })
     .catch((err) => {
       console.log(err);
+    });
+};
+
+// Функция форматирования даты
+const formatDate = (date) => {
+  return date.toLocaleDateString("ru-RU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+// Обработчик кнопки "i" - информация о карточке
+const handleInfoClick = (cardId) => {
+  const cardInfoModalWindow = document.querySelector(".popup_type_info");
+  const cardInfoTitle = cardInfoModalWindow.querySelector(".popup__title");
+  const cardInfoList = cardInfoModalWindow.querySelector(".popup__list");
+  const cardInfoText = cardInfoModalWindow.querySelector(".popup__text");
+  const cardInfoInfo = cardInfoModalWindow.querySelector(".popup__info");
+  const definitionTemplate = document.querySelector("#popup-info-definition-template");
+  const userPreviewTemplate = document.querySelector("#popup-info-user-preview-template");
+
+  // Очищаем контейнеры
+  cardInfoList.innerHTML = '';
+  cardInfoInfo.innerHTML = '';
+
+  // Получаем актуальные данные с сервера
+  getCardList()
+    .then((cards) => {
+      const cardData = cards.find(card => card._id === cardId);
+      if (!cardData) {
+        console.log('Карточка не найдена');
+        return;
+      }
+
+      // Заполняем заголовок
+      cardInfoTitle.textContent = cardData.name;
+
+      // Добавляем дату создания
+      const dateElement = definitionTemplate.content.cloneNode(true);
+      dateElement.querySelector('.popup__info-term').textContent = 'Дата создания:';
+      dateElement.querySelector('.popup__info-description').textContent = formatDate(new Date(cardData.createdAt));
+      cardInfoInfo.append(dateElement);
+
+      // Добавляем автора
+      const authorElement = definitionTemplate.content.cloneNode(true);
+      authorElement.querySelector('.popup__info-term').textContent = 'Автор:';
+      authorElement.querySelector('.popup__info-description').textContent = cardData.owner.name;
+      cardInfoInfo.append(authorElement);
+
+      // Добавляем количество лайков
+      const likesElement = definitionTemplate.content.cloneNode(true);
+      likesElement.querySelector('.popup__info-term').textContent = 'Лайков:';
+      likesElement.querySelector('.popup__info-description').textContent = cardData.likes.length;
+      cardInfoInfo.append(likesElement);
+
+      // Добавляем список пользователей, лайкнувших карточку
+      if (cardData.likes.length > 0) {
+        cardInfoText.textContent = 'Пользователи, лайкнувшие карточку:';
+        cardData.likes.forEach((user) => {
+          const userElement = userPreviewTemplate.content.cloneNode(true);
+          const listItem = userElement.querySelector('.popup__list-item');
+          listItem.textContent = user.name;
+          if (user.avatar) {
+            listItem.style.backgroundImage = `url(${user.avatar})`;
+          }
+          cardInfoList.append(listItem);
+        });
+      } else {
+        cardInfoText.textContent = 'Нет лайков';
+      }
+
+      openModalWindow(cardInfoModalWindow);
+    })
+    .catch((err) => {
+      console.log('Ошибка при загрузке информации о карточке:', err);
     });
 };
 
@@ -193,7 +269,7 @@ Promise.all([getCardList(), getUserInfo()])
     profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
     
     cards.forEach((cardData) => {
-      const cardElement = createCard(cardData, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard);
+      const cardElement = createCard(cardData, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard, handleInfoClick);
       placesWrap.append(cardElement);
     });
   })

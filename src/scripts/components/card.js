@@ -24,10 +24,11 @@ const getTemplate = () => {
     .cloneNode(true);
 };
 
-export const createCard = (data, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard) => {
+export const createCard = (data, handlePreviewPicture, currentUserId, handleDeleteCard, handleLikeCard, handleInfoClick) => {
   const cardElement = getTemplate();
   const likeButton = cardElement.querySelector(".card__like-button");
   const deleteButton = cardElement.querySelector(".card__control-button_type_delete");
+  const infoButton = cardElement.querySelector(".card__control-button_type_info");
   const cardImage = cardElement.querySelector(".card__image");
   const likeCount = cardElement.querySelector(".card__like-count");
 
@@ -48,6 +49,13 @@ export const createCard = (data, handlePreviewPicture, currentUserId, handleDele
   } else {
     deleteButton.addEventListener("click", () => {
       handleDeleteCard(data._id, cardElement);
+    });
+  }
+
+  // Кнопка информации
+  if (handleInfoClick) {
+    infoButton.addEventListener("click", () => {
+      handleInfoClick(data._id);
     });
   }
 
