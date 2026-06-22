@@ -8,6 +8,15 @@ export const deleteCard = (cardElement) => {
   cardElement.remove();
 };
 
+export const updateLikeState = (likeButton, likeCount, isLiked, likesCount) => {
+  if (isLiked) {
+    likeButton.classList.add('card__like-button_is-active');
+  } else {
+    likeButton.classList.remove('card__like-button_is-active');
+  }
+  likeCount.textContent = likesCount;
+};
+
 const getTemplate = () => {
   return document
     .getElementById("card-template")
@@ -26,9 +35,11 @@ export const createCard = (data, handlePreviewPicture, currentUserId, handleDele
   cardImage.alt = data.name;
   cardElement.querySelector(".card__title").textContent = data.name;
 
-  // Отображение количества лайков
-  if (likeCount) {
-    likeCount.textContent = data.likes.length;
+  // Проверяем, есть ли лайк от текущего пользователя
+  const isLiked = data.likes.some(user => user._id === currentUserId);
+  likeCount.textContent = data.likes.length;
+  if (isLiked) {
+    likeButton.classList.add('card__like-button_is-active');
   }
 
   // Показываем кнопку удаления только для автора

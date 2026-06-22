@@ -6,7 +6,7 @@
   Из index.js не допускается что то экспортировать
 */
 
-import { createCard, deleteCard, likeCard } from "./components/card.js";
+import { createCard, deleteCard, likeCard, updateLikeState } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 import { 
@@ -142,8 +142,8 @@ const handleLikeCard = (cardId, likeButton, likeCount) => {
   const isLiked = likeButton.classList.contains('card__like-button_is-active');
   changeLikeStatus(cardId, isLiked)
     .then((cardData) => {
-      likeButton.classList.toggle('card__like-button_is-active');
-      likeCount.textContent = cardData.likes.length;
+      // Используем метод из card.js для обновления разметки
+      updateLikeState(likeButton, likeCount, !isLiked, cardData.likes.length);
     })
     .catch((err) => {
       console.log(err);
