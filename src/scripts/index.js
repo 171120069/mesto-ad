@@ -138,11 +138,9 @@ const handleDeleteCard = (cardId, cardElement) => {
     });
 };
 
-const handleLikeCard = (cardId, likeButton, likeCount) => {
-  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+const handleLikeCard = (cardId, likeButton, likeCount, isLiked) => {
   changeLikeStatus(cardId, isLiked)
     .then((cardData) => {
-      // Используем метод из card.js для обновления разметки
       updateLikeState(likeButton, likeCount, !isLiked, cardData.likes.length);
     })
     .catch((err) => {
@@ -182,8 +180,14 @@ const handleInfoClick = (cardId) => {
         return;
       }
 
-      // Заполняем заголовок
-      cardInfoTitle.textContent = cardData.name;
+      // Заголовок — статичный
+      cardInfoTitle.textContent = 'Информация о карточке';
+
+      // Добавляем описание (название карточки)
+      const nameElement = definitionTemplate.content.cloneNode(true);
+      nameElement.querySelector('.popup__info-term').textContent = 'Описание:';
+      nameElement.querySelector('.popup__info-description').textContent = cardData.name;
+      cardInfoInfo.append(nameElement);
 
       // Добавляем дату создания
       const dateElement = definitionTemplate.content.cloneNode(true);
@@ -191,21 +195,21 @@ const handleInfoClick = (cardId) => {
       dateElement.querySelector('.popup__info-description').textContent = formatDate(new Date(cardData.createdAt));
       cardInfoInfo.append(dateElement);
 
-      // Добавляем автора
+      // Добавляем владельца
       const authorElement = definitionTemplate.content.cloneNode(true);
-      authorElement.querySelector('.popup__info-term').textContent = 'Автор:';
+      authorElement.querySelector('.popup__info-term').textContent = 'Владелец:';
       authorElement.querySelector('.popup__info-description').textContent = cardData.owner.name;
       cardInfoInfo.append(authorElement);
 
       // Добавляем количество лайков
       const likesElement = definitionTemplate.content.cloneNode(true);
-      likesElement.querySelector('.popup__info-term').textContent = 'Лайков:';
+      likesElement.querySelector('.popup__info-term').textContent = 'Количество лайков:';
       likesElement.querySelector('.popup__info-description').textContent = cardData.likes.length;
       cardInfoInfo.append(likesElement);
 
       // Добавляем список пользователей, лайкнувших карточку
       if (cardData.likes.length > 0) {
-        cardInfoText.textContent = 'Пользователи, лайкнувшие карточку:';
+        cardInfoText.textContent = 'Лайкнули:';
         cardData.likes.forEach((user) => {
           const userElement = userPreviewTemplate.content.cloneNode(true);
           const listItem = userElement.querySelector('.popup__list-item');
@@ -216,7 +220,7 @@ const handleInfoClick = (cardId) => {
           cardInfoList.append(listItem);
         });
       } else {
-        cardInfoText.textContent = 'Нет лайков';
+        cardInfoText.textContent = 'Лайкнули: нет';
       }
 
       openModalWindow(cardInfoModalWindow);

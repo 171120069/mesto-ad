@@ -60,7 +60,8 @@ export const createCard = (data, handlePreviewPicture, currentUserId, handleDele
   }
 
   likeButton.addEventListener("click", () => {
-    handleLikeCard(data._id, likeButton, likeCount);
+    const isLiked = likeButton.classList.contains('card__like-button_is-active');
+    handleLikeCard(data._id, likeButton, likeCount, isLiked);
   });
 
   if (handlePreviewPicture) {
